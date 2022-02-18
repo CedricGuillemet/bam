@@ -1,9 +1,7 @@
 #include "common.h"
 #include "bgfx_utils.h"
 #include "imgui/imgui.h"
-#include "Node.h"
 #include "Shaders.h"
-#include "UI.h"
 
 namespace App
 {
@@ -99,7 +97,7 @@ public:
 		);
 
 		// Create program from shaders.
-		m_program = LoadProgram("Node_vs", "Circle_fs");
+		m_program = LoadProgram("Default_vs", "Default_fs");
 
 	}
 
@@ -142,19 +140,8 @@ public:
 				);
 
 			ImGui::Text("Primitive topology:");
-            if (ImGui::Button("Fit Nodes"))
-            {
-                FitNodes();
-            }
-            ImGui::SameLine();
-            if (ImGui::Button("Fit Selected Nodes"))
-            {
-                FitSelectedNodes();
-            }
-            EditOptions();
+            
 			ImGui::End();
-
-			ShowNodeEditor();
 
 			imguiEndFrame();
 

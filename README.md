@@ -10,7 +10,11 @@ Emscripten : [![Build Status](https://cedricguillemet.visualstudio.com/bimgui/_a
 
 A template/framework for experiments using bgfx/dear imgui/imguizmo.
 Fork this repo, clone it and start hacking.
-Build for Win32/Linux/MacOS and web with 1 repo, 1 codebase.
+Build for Win32/Linux/MacOS and Web with 1 repo, 1 codebase.
+Goal is to clone, write the first line of code and build for your platform within 5 Min.
+
+I encourage you to add any 'must have' sub-repo and extend the sample app accordingly.
+(As long as it's not Boost.)
 
 ## Build
 
