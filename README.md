@@ -1,4 +1,4 @@
-# bimgui framework 
+# BAM! framework 
 
 MacOs : [![Build Status](https://cedricguillemet.visualstudio.com/bimgui/_apis/build/status/CedricGuillemet.bimgui?branchName=main&jobName=macOS)](https://cedricguillemet.visualstudio.com/Imog3n/_build/latest?definitionId=3&branchName=main)
 
