@@ -38,6 +38,12 @@ namespace App
 		1, 3, 2,
 	};
 
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+EM_JS(void, HideLoader, (), { document.getElementById("loader").style.display = "none"; });
+#else
+    void HideLoader() {}
+#endif
 
 
 class App : public entry::AppI
@@ -99,6 +105,7 @@ public:
 		// Create program from shaders.
 		m_program = LoadProgram("Default_vs", "Default_fs");
 
+		HideLoader();
 	}
 
 	virtual int shutdown() override

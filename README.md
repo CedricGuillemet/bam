@@ -66,6 +66,6 @@ ninja
 
 In `bin` folder:
 
-````
+```
 python3 -m http.server
 ```
