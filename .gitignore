@@ -30,3 +30,10 @@
 *.exe
 *.out
 *.app
+
+# Caches
+.DS_Store
+
+# Build folders
+build/
+buildweb/
