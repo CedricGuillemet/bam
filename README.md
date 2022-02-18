@@ -62,3 +62,10 @@ cd build
 emcmake cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release
 ninja
 ```
+#### Test web
+
+In `bin` folder:
+
+````
+python3 -m http.server
+```

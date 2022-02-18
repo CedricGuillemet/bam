@@ -3,7 +3,11 @@ file(GLOB_RECURSE SRC_FILES
     Source/*.cpp
 )
 
-SET(EXE_NAME "App")
+if (EMSCRIPTEN)
+    SET(EXE_NAME "index")
+else()
+    SET(EXE_NAME "App")
+endif()
 
 ADD_EXECUTABLE(${EXE_NAME} ${SRC_FILES})
 
@@ -32,7 +36,7 @@ if(MSVC)
 endif()
 
 if (EMSCRIPTEN)
-    set_target_properties(${EXE_NAME} PROPERTIES LINK_FLAGS "-s USE_WEBGL2=1 -s WASM=1 -s FULL_ES3=1 -s ALLOW_MEMORY_GROWTH=1 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/Source/App.html")
+    set_target_properties(${EXE_NAME} PROPERTIES LINK_FLAGS "-s USE_WEBGL2=1 -s WASM=1 -s FULL_ES3=1 -s ALLOW_MEMORY_GROWTH=1 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/Source/index.html")
     add_definitions(-D_X86_)
     SET(CMAKE_EXECUTABLE_SUFFIX ".html")
 endif()
