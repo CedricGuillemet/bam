@@ -18,7 +18,7 @@ function (AddShaders extension type dx11Profile)
         if(${FILE_NAME_EXT} STREQUAL ".${extension}")
             
 
-if(WIN32)
+if(WIN32 || LINUX)
             set(SHADER_OUTPUT_TARGET "${shaders_output}/${FILE_NAME}_${extension}_dx11.h")
             add_custom_command(
                 OUTPUT ${SHADER_OUTPUT_TARGET}
