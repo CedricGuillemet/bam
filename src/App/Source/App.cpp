@@ -42,7 +42,7 @@ namespace App
 #include <emscripten.h>
 EM_JS(void, HideLoader, (), { document.getElementById("loader").style.display = "none"; });
 #else
-    void HideLoader() {}
+void HideLoader() {}
 #endif
 
 
