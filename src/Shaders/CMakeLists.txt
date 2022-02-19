@@ -30,7 +30,7 @@ if(WIN32)
                 COMMAND "$<TARGET_FILE:shaderc>" -f ${SHADER} -o "${shaders_output}/${FILE_NAME}_${extension}_essl.h" --platform android --type ${type} --bin2c ${FILE_NAME}_${extension}_essl
                 DEPENDS ${SHADER}
                 COMMENT "Compiling shader ${SHADER}")
-elseif(APPLE OR UNIX)
+elseif(APPLE OR (UNIX AND NOT EMSCRIPTEN))
             message("Compiling shaders on MacOS. HLSL will not be built.")
             set(SHADER_OUTPUT_TARGET "${shaders_output}/${FILE_NAME}_${extension}_mtl.h")
             add_custom_command(
@@ -49,7 +49,7 @@ endif()
             FILE(APPEND ${shaders_inc_file} "#ifdef WIN32\n#include \"${FILE_NAME}_${extension}_dx9.h\"\n")
             FILE(APPEND ${shaders_inc_file} "#include \"${FILE_NAME}_${extension}_dx11.h\"\n#endif\n")
             FILE(APPEND ${shaders_inc_file} "#include \"${FILE_NAME}_${extension}_glsl.h\"\n")
-            FILE(APPEND ${shaders_inc_file} "#ifdef __APPLE__ #include \"${FILE_NAME}_${extension}_mtl.h\"\n#endif\n")
+            FILE(APPEND ${shaders_inc_file} "#ifdef __APPLE__\n#include \"${FILE_NAME}_${extension}_mtl.h\"\n#endif\n")
             FILE(APPEND ${shaders_inc_file} "#include \"${FILE_NAME}_${extension}_spv.h\"\n")
             FILE(APPEND ${shaders_inc_file} "#include \"${FILE_NAME}_${extension}_essl.h\"\n")
             set(SHADER_OUTPUT_FILES ${SHADER_OUTPUT_FILES} ${SHADER_OUTPUT_TARGET} PARENT_SCOPE)
