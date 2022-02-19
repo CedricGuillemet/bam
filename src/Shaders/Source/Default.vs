@@ -6,7 +6,7 @@ $output v_normal
 
 void main()
 {
-    mat4 mvp = mul(u_world, u_viewProjection);
+    mat4 mvp = mul(u_viewProjection, u_world);
 	gl_Position = mul(mvp, vec4(a_position, 1.0) );
 	v_normal = mul(u_world, vec4(a_normal, 0.0)).xyz;
 }
