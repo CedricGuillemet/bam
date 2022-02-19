@@ -155,6 +155,63 @@ public:
 		return 0;
 	}
 
+    void editTransform(const float* view, const float* projection, float* world)
+    {
+        static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+        static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+        if (ImGui::IsKeyPressed(90))
+           mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        if (ImGui::IsKeyPressed(69))
+           mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        if (ImGui::IsKeyPressed(82)) // r Key
+           mCurrentGizmoOperation = ImGuizmo::SCALE;
+        if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+          mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+           mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+          mCurrentGizmoOperation = ImGuizmo::SCALE;
+        float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+        ImGuizmo::DecomposeMatrixToComponents(world, matrixTranslation, matrixRotation, matrixScale);
+        ImGui::InputFloat3("Tr", matrixTranslation);
+        ImGui::InputFloat3("Rt", matrixRotation);
+        ImGui::InputFloat3("Sc", matrixScale);
+        ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, world);
+
+        if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+        {
+          if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+             mCurrentGizmoMode = ImGuizmo::LOCAL;
+          ImGui::SameLine();
+          if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+             mCurrentGizmoMode = ImGuizmo::WORLD;
+        }
+        static bool useSnap(false);
+        if (ImGui::IsKeyPressed(83))
+          useSnap = !useSnap;
+        ImGui::Checkbox("Snap", &useSnap);
+        ImGui::SameLine();
+        static float snap[3] = {1, 1, 1};
+        switch (mCurrentGizmoOperation)
+        {
+        case ImGuizmo::TRANSLATE:
+           ImGui::InputFloat3("Snap", snap);
+           break;
+        case ImGuizmo::ROTATE:
+           ImGui::InputFloat("Angle Snap", snap);
+           break;
+        case ImGuizmo::SCALE:
+           ImGui::InputFloat("Scale Snap", snap);
+           break;
+        default:
+            break;
+        }
+        ImGuiIO& io = ImGui::GetIO();
+        ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+        ImGuizmo::Manipulate(view, projection, mCurrentGizmoOperation, mCurrentGizmoMode, world, NULL, useSnap ? snap : NULL);
+    }
 	bool update() override
 	{
 		if (!entry::processEvents(m_width, m_height, m_debug, m_reset, &m_mouseState) )
@@ -169,22 +226,38 @@ public:
 				, uint16_t(m_height)
 				);
 
+            const bx::Vec3 at  = { 0.0f, 0.0f, 0.0f };
+            const bx::Vec3 eye = { 3.0f, 4.0f, 5.0f };
+            
+            // Set view and projection matrix for view 0.
+            float view[16];
+            bx::mtxLookAt(view, eye, at);
 
-			ImGui::SetNextWindowPos(
-				  ImVec2(m_width - m_width / 5.0f - 10.0f, 10.0f)
-				, ImGuiCond_FirstUseEver
-				);
-			ImGui::SetNextWindowSize(
-				  ImVec2(m_width / 5.0f, m_height / 3.5f)
-				, ImGuiCond_FirstUseEver
-				);
-			/*ImGui::Begin("Dialog"
+            float proj[16];
+            bx::mtxProj(proj, 60.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+
+            float viewProj[16];
+            bx::mtxMul(viewProj, view, proj);
+            
+            bgfx::setUniform(m_worldUniform, m_world);
+            bgfx::setUniform(m_viewProjectionUniform, viewProj);
+
+            // Transform dialog
+            ImGui::SetNextWindowPos(
+                  ImVec2(10.0f, 10.0f)
+                , ImGuiCond_FirstUseEver
+                );
+            ImGui::SetNextWindowSize(
+                  ImVec2(m_width / 5.0f, m_height / 3.5f)
+                , ImGuiCond_FirstUseEver
+                );
+			ImGui::Begin("Transform"
 				, NULL
 				, 0
 				);
 
-            
-			ImGui::End();*/
+            editTransform(view, proj, m_world);
+			ImGui::End();
 
 			imguiEndFrame();
 
@@ -193,34 +266,15 @@ public:
 			bgfx::setViewRect(0, 0, 0, m_width, m_height);
 			bgfx::setViewClear(0
 				, BGFX_CLEAR_COLOR | BGFX_CLEAR_DEPTH
-				, 255U
+				, 0x20304030
 				, 1.0f
 				, 0
 			);
 			bgfx::discard();
             bgfx::touch(0);
 
-			const bx::Vec3 at  = { 0.0f, 0.0f, 0.0f };
-			const bx::Vec3 eye = { 3.0f, 4.0f, 5.0f };
-
-			// Set view and projection matrix for view 0.
-			{
-				float view[16];
-				bx::mtxLookAt(view, eye, at);
-
-				float proj[16];
-				bx::mtxProj(proj, 60.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
-
-                float viewProj[16];
-                bx::mtxMul(viewProj, view, proj);
-                
-                bgfx::setUniform(m_worldUniform, m_world);
-                bgfx::setUniform(m_viewProjectionUniform, viewProj);
-                
-                
-				// Set view 0 default viewport.
-				bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
-			}
+            // Set view 0 default viewport.
+            bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
 
 			uint64_t state = BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LESS;
 
