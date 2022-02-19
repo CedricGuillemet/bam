@@ -1,14 +1,12 @@
-$input v_texcoord0, v_color0, v_positionWorld, v_normal
+$input v_normal
 
 #include "bgfx_shader.sh"
 #include "CommonFS.shader"
 #include "Common.shader"
 
-uniform vec4 radius; 
-uniform vec4 T; 
-
 void main()
 {
-	//float c = Circle(v_texcoord0, radius.x, T.x);
-    gl_FragColor = vec4(1.,0.,1.,1.);//c, c, c, c);
+	float halfNormal = dot(normalize(v_normal.xyz), normalize(vec3(0.7, 0.4, 0.3))) * 0.5 + 0.5;
+    float light = halfNormal * halfNormal;
+    gl_FragColor = vec4(light);
 }

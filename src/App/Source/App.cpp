@@ -5,38 +5,74 @@
 
 namespace App
 {
-	struct PosColorVertex
+	
+struct PosNormalVertex
+{
+	float m_x;
+	float m_y;
+	float m_z;
+	uint32_t m_normal;
+
+	static void init()
 	{
-		float m_x;
-		float m_y;
-		float m_z;
+		ms_layout
+			.begin()
+			.add(bgfx::Attrib::Position,  3, bgfx::AttribType::Float)
+			.add(bgfx::Attrib::Normal,    4, bgfx::AttribType::Uint8, true, true)
+			.end();
+	}
 
-		static void init()
-		{
-			ms_layout
-				.begin()
-				.add(bgfx::Attrib::Position, 3, bgfx::AttribType::Float)
-				.end();
-		};
+	static bgfx::VertexLayout ms_layout;
+};
 
-		static bgfx::VertexLayout ms_layout;
-	};
+bgfx::VertexLayout PosNormalVertex::ms_layout;
 
-	bgfx::VertexLayout PosColorVertex::ms_layout;
+static PosNormalVertex s_cubeVertices[24] =
+{
+	{-1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f) },
+	{ 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f) },
+	{-1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f) },
+	{ 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f,  0.0f,  1.0f) },
+	{-1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f) },
+	{ 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f) },
+	{-1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f) },
+	{ 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f,  0.0f, -1.0f) },
+	{-1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f) },
+	{ 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f) },
+	{-1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f) },
+	{ 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 0.0f,  1.0f,  0.0f) },
+	{-1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f) },
+	{ 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f) },
+	{-1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f) },
+	{ 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 0.0f, -1.0f,  0.0f) },
+	{ 1.0f, -1.0f,  1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f) },
+	{ 1.0f,  1.0f,  1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f) },
+	{ 1.0f, -1.0f, -1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f) },
+	{ 1.0f,  1.0f, -1.0f, encodeNormalRgba8( 1.0f,  0.0f,  0.0f) },
+	{-1.0f, -1.0f,  1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f) },
+	{-1.0f,  1.0f,  1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f) },
+	{-1.0f, -1.0f, -1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f) },
+	{-1.0f,  1.0f, -1.0f, encodeNormalRgba8(-1.0f,  0.0f,  0.0f) },
+};
 
-	static PosColorVertex s_cubeVertices[] =
-	{
-		{-1.0f,  1.0f,  1.0f },
-		{ 1.0f,  1.0f,  1.0f },
-		{-1.0f, -1.0f,  1.0f },
-		{ 1.0f, -1.0f,  1.0f },
-	};
+static const uint16_t s_cubeIndices[36] =
+{
+	 0,  2,  1,
+	 1,  2,  3,
+	 4,  5,  6,
+	 5,  7,  6,
 
-	static const uint16_t s_cubeTriList[] =
-	{
-		0, 1, 2, // 0
-		1, 3, 2,
-	};
+	 8, 10,  9,
+	 9, 10, 11,
+	12, 13, 14,
+	13, 15, 14,
+
+	16, 18, 17,
+	17, 18, 19,
+	20, 21, 22,
+	21, 23, 22,
+};
+
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -87,20 +123,21 @@ public:
 		imguiCreate();
         
 		// Create vertex stream declaration.
-		PosColorVertex::init();
+		PosNormalVertex::init();
 
-		// Create static vertex buffer.
+        // Create static vertex buffer.
 		m_vbh = bgfx::createVertexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices))
-			, PosColorVertex::ms_layout
-		);
+					  bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices) )
+					, PosNormalVertex::ms_layout
+					);
 
-		// Create static index buffer for triangle list rendering.
-		m_ibh = bgfx::createIndexBuffer(
-			// Static data can be passed with bgfx::makeRef
-			bgfx::makeRef(s_cubeTriList, sizeof(s_cubeTriList))
-		);
+        bx::mtxIdentity(m_world);
+        
+		// Create static index buffer.
+		m_ibh = bgfx::createIndexBuffer(bgfx::makeRef(s_cubeIndices, sizeof(s_cubeIndices) ) );
+
+        m_worldUniform = bgfx::createUniform("u_world", bgfx::UniformType::Mat4);
+        m_viewProjectionUniform = bgfx::createUniform("u_viewProjection", bgfx::UniformType::Mat4);
 
 		// Create program from shaders.
 		m_program = LoadProgram("Default_vs", "Default_fs");
@@ -141,14 +178,13 @@ public:
 				  ImVec2(m_width / 5.0f, m_height / 3.5f)
 				, ImGuiCond_FirstUseEver
 				);
-			ImGui::Begin("Settings"
+			/*ImGui::Begin("Dialog"
 				, NULL
 				, 0
 				);
 
-			ImGui::Text("Primitive topology:");
             
-			ImGui::End();
+			ImGui::End();*/
 
 			imguiEndFrame();
 
@@ -164,7 +200,29 @@ public:
 			bgfx::discard();
             bgfx::touch(0);
 
-			uint64_t state = BGFX_STATE_WRITE_RGB | BGFX_STATE_WRITE_A;
+			const bx::Vec3 at  = { 0.0f, 0.0f, 0.0f };
+			const bx::Vec3 eye = { 3.0f, 4.0f, 5.0f };
+
+			// Set view and projection matrix for view 0.
+			{
+				float view[16];
+				bx::mtxLookAt(view, eye, at);
+
+				float proj[16];
+				bx::mtxProj(proj, 60.0f, float(m_width)/float(m_height), 0.1f, 100.0f, bgfx::getCaps()->homogeneousDepth);
+
+                float viewProj[16];
+                bx::mtxMul(viewProj, view, proj);
+                
+                bgfx::setUniform(m_worldUniform, m_world);
+                bgfx::setUniform(m_viewProjectionUniform, viewProj);
+                
+                
+				// Set view 0 default viewport.
+				bgfx::setViewRect(0, 0, 0, uint16_t(m_width), uint16_t(m_height) );
+			}
+
+			uint64_t state = BGFX_STATE_WRITE_MASK | BGFX_STATE_DEPTH_TEST_LESS;
 
 			// Set vertex and index buffer.
 			bgfx::setVertexBuffer(0, m_vbh);
@@ -193,11 +251,13 @@ public:
 	uint32_t m_debug;
 	uint32_t m_reset;
 	int64_t m_timeOffset;
-
+    float m_world[16];
 
 	bgfx::VertexBufferHandle m_vbh;
 	bgfx::IndexBufferHandle m_ibh;
 	bgfx::ProgramHandle m_program;
+    bgfx::UniformHandle m_worldUniform;
+    bgfx::UniformHandle m_viewProjectionUniform;
 };
 
 } // namespace
