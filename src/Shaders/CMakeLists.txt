@@ -18,7 +18,7 @@ function (AddShaders extension type dx11Profile)
         if(${FILE_NAME_EXT} STREQUAL ".${extension}")
             
 
-if(WIN32 || LINUX)
+if(WIN32)
             set(SHADER_OUTPUT_TARGET "${shaders_output}/${FILE_NAME}_${extension}_dx11.h")
             add_custom_command(
                 OUTPUT ${SHADER_OUTPUT_TARGET}
@@ -30,7 +30,7 @@ if(WIN32 || LINUX)
                 COMMAND "$<TARGET_FILE:shaderc>" -f ${SHADER} -o "${shaders_output}/${FILE_NAME}_${extension}_essl.h" --platform android --type ${type} --bin2c ${FILE_NAME}_${extension}_essl
                 DEPENDS ${SHADER}
                 COMMENT "Compiling shader ${SHADER}")
-elseif(APPLE)
+elseif(APPLE OR UNIX)
             message("Compiling shaders on MacOS. HLSL will not be built.")
             set(SHADER_OUTPUT_TARGET "${shaders_output}/${FILE_NAME}_${extension}_mtl.h")
             add_custom_command(
