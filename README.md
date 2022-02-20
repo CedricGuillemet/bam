@@ -26,9 +26,7 @@ Binary output directory is `bin/`
 
 ### Clone repo
 ```
-git clone git clone https://github.com/CedricGuillemet/bimgui.git App
-cd App
-git submodule update --init --recursive
+git clone https://github.com/CedricGuillemet/bam.git --recurse-submodules
 ```
 
 ### Windows
