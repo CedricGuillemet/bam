@@ -2,6 +2,7 @@
 
 Linux [![Build Status](https://cedricguillemet.visualstudio.com/Bam/_apis/build/status/CedricGuillemet.bam?branchName=main&jobName=Ubuntu_Clang)](https://cedricguillemet.visualstudio.com/Bam/_build/latest?definitionId=4&branchName=main)
 Emscripten [![Build Status](https://cedricguillemet.visualstudio.com/Bam/_apis/build/status/CedricGuillemet.bam?branchName=main&jobName=Ubuntu_Emscripten)](https://cedricguillemet.visualstudio.com/Bam/_build/latest?definitionId=4&branchName=main)
+
 MacOS [![Build Status](https://cedricguillemet.visualstudio.com/Bam/_apis/build/status/CedricGuillemet.bam?branchName=main&jobName=macOS)](https://cedricguillemet.visualstudio.com/Bam/_build/latest?definitionId=4&branchName=main)
 Windows [![Build Status](https://cedricguillemet.visualstudio.com/Bam/_apis/build/status/CedricGuillemet.bam?branchName=main&jobName=win32_x64)](https://cedricguillemet.visualstudio.com/Bam/_build/latest?definitionId=4&branchName=main)
 
