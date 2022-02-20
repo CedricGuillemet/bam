@@ -12,10 +12,10 @@ Fork this repo, clone it and start hacking.
 Build for Win32/Linux/MacOS and Web with 1 repo, 1 codebase.
 Goal is to clone, write the first line of code and build for your platform within 5 Min.
 
-![MacOS](Doc/BAM_MacOS.png)
-![Windows](Doc/BAM_Windows.png)
-![Ubuntu](Doc/BAM_Ubuntu.png)
-![Web](Doc/BAM_Web.png)
+![MacOS](doc/BAM_MacOS.png)
+![Windows](doc/BAM_Windows.png)
+![Ubuntu](doc/BAM_Ubuntu.png)
+![Web](doc/BAM_Web.png)
 
 I encourage you to add any 'must have' sub-repo and extend the sample app accordingly.
 (As long as it's not Boost.)
