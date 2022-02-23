@@ -9,6 +9,7 @@ add_subdirectory(bgfx.cmake EXCLUDE_FROM_ALL)
 target_compile_definitions(bgfx PRIVATE BGFX_CONFIG_DEBUG_UNIFORM=0)
 target_compile_definitions(bgfx PRIVATE BGFX_CONFIG_MAX_VERTEX_STREAMS=30)
 target_compile_definitions(bgfx PRIVATE BGFX_CONFIG_MAX_COMMAND_BUFFER_SIZE=12582912)
+target_compile_definitions(example-common PRIVATE USE_ENTRY=1)
 
 if (NOT EMSCRIPTEN)
     target_compile_definitions(bgfx PRIVATE BGFX_CONFIG_MULTITHREADED=1)
